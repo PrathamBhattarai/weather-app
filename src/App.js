@@ -6,8 +6,8 @@ const api = {
 
 function App() {
   
-  const {query, setQuery} = useState('');
-  const {weather, setWeather} = useState({});
+  const [query, setQuery] = useState('');
+  const [weather, setWeather] = useState({});
 
   const search = evt =>{
     if(evt.key === "Enter"){
@@ -16,7 +16,7 @@ function App() {
       .then(result =>{
         setWeather(result);
         setQuery('');
-        console.log(weather);
+        console.log(result);
       }); 
     }
   }
@@ -34,7 +34,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className={(typeof weather.main != "undefined") ? (weather.main.temp > 16) ? 'app warm' : 'app' : 'app'}>
      <main>
        <div className = "search-box">
         <input 
@@ -45,22 +45,25 @@ function App() {
         value = {query}
         onKeyPress = {search}
         />
+        </div>
+        {(typeof weather.main != "undefined") ? (
         <div>
           <div className="location-box">
-            <div className="location">New York city, US</div>
+            <div className="location">{weather.name}, {weather.sys.country}</div>
             <div className="date">{dateBuilder(new Date())}</div>
           </div>
-          
-        </div>
-        <div className="weather-box">
-          <div className="temp">
-            15°c
+          <div className="weather-box">
+            <div className="temp">
+              {Math.round(weather.main.temp)}°c
+            </div>
+            <div className="weather">{weather.weather[0].main}</div>
           </div>
-          <div className="weather"> Sunny </div>
         </div>
+        ) : ('')}
+         
           
         
-       </div>
+       
      </main>
     </div>
   );
